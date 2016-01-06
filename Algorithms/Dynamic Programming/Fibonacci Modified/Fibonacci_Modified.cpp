@@ -61,18 +61,14 @@ public :
 				if (target == unit.end()) {
 					unit.push_back(0U);
 					target = std::next(unit.end(), -1);
-//					cout << "need expand" << unit.size() << endl;
 				}
 				tmp = carry + *target;
-//				cout << "tmp : " << tmp << ", carry : " << carry << ",target : " << *target << endl;
 				if (rit != rhs.value.cend()) {
 					tmp += (*lit) * (*rit);
 					++rit;
 				}
 				*target = tmp%base;
-				//unit.push_back(tmp%base);
 				carry = tmp/base;
-//				cout << "tmp : " << tmp << ", carry : " << carry << ",target : " << *target << endl;
 				++target;
 			}
 			++lit;
@@ -82,8 +78,27 @@ public :
 	Number squared(void) {
 		// very big number : A = A_high*base^n + A_low
 		// A*A => A_high*A_high*base^2n + A_low*A_low + 2*A_high*A_low*base^n
-		if (value.size() < 10);
+		cout << power(value.begin(), value.end()) << endl;
+
+
 		return Number();
+	}
+	template<typename Iter>
+	Number power(Iter First, Iter Last) {
+		auto size = distance(First, Last);
+		if (size == 1) {
+			unsigned carry = *First**First;
+			unsigned arr[] = {carry%base, carry/base};
+			return Number(arr, arr+1);
+		}
+
+		auto high_begin = First;
+		auto high_end = std::next(First, size/2);
+		auto low_begin = std::next(First, size/2);
+		auto low_end = std::next(First, size);
+
+		power(high_begin, high_end);
+		power(low_begin, low_end);
 	}
 };
 
@@ -107,11 +122,16 @@ int main(void) {
 //	cout << fibo[(n-1)%2] << endl;
 
 	// Number class operator Test
-	Number a = 2;
+//	Number a = 2;
+//	a.squared();
 
-	for (int i = 0; i < 10; ++i) {
-		cout << a << endl;
-		a = a * a;
-	}
+//	for (int i = 0; i < 10; ++i) {
+//		cout << a << endl;
+//		a.squared()
+//	}
+
+	list<int> test = {1,2,3};
+	cout << test.size() << endl;
+	cout << distance(test.begin(), test.end()) << endl;
 	return 0;
 }

@@ -5,3 +5,5 @@
 *.exe
 *.o
 
+# ctags file
+tags
