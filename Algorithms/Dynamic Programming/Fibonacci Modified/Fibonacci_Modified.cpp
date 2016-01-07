@@ -15,6 +15,7 @@ public :
 		}
 		value.push_back(v);
 	}
+	// Last is inclusive, First is exclusive.
 	template<typename Iter>
 	Number(Iter Last, Iter First) : value(Last, First) {}
 	friend ostream& operator << (ostream& os, const Number& obj) {
@@ -78,60 +79,60 @@ public :
 	Number squared(void) {
 		// very big number : A = A_high*base^n + A_low
 		// A*A => A_high*A_high*base^2n + A_low*A_low + 2*A_high*A_low*base^n
-		cout << power(value.begin(), value.end()) << endl;
-
-
-		return Number();
+//		cout << "squared of " << *this << endl;
+		return power(value.begin(), value.end());
 	}
+private :
 	template<typename Iter>
-	Number power(Iter First, Iter Last) {
+	inline Number power(Iter First, Iter Last) {
 		auto size = distance(First, Last);
 		if (size == 1) {
-			unsigned carry = *First**First;
-			unsigned arr[] = {carry%base, carry/base};
-			return Number(arr, arr+1);
+			return Number(*First**First);
 		}
 
-		auto high_begin = First;
-		auto high_end = std::next(First, size/2);
-		auto low_begin = std::next(First, size/2);
-		auto low_end = std::next(First, size);
+		size_t n = size/2;
+		// A*base^n + B
+		// AA*base^2n + BB + 2AB*base^n
+		Number A = power(std::next(First, n), Last);
+		Number B = power(First, std::next(First, n));
+		Number C = 2*Number(First, std::next(First, n))*Number(std::next(First, n), Last);
 
-		power(high_begin, high_end);
-		power(low_begin, low_end);
+		Number r = A.shift(2*n) + B + C.shift(n);
+		return r;
+	}
+	inline Number& shift(size_t n) {
+		while (n--) {
+			value.push_front(0U);
+		}
+		return *this;
 	}
 };
 
 int main(void) {
-//	unsigned a, b, n;
-//	cin >> a >> b >> n;
-//
-//	Number fibo[2] = {a, b};
-//
+	unsigned a, b, n;
+	cin >> a >> b >> n;
+
+	Number fibo[2] = {a, b};
+
 //	cout << "0 : " << fibo[0] << endl;
 //	cout << "1 : " << fibo[1] << endl;
-//
-//	unsigned i = 2U;
-//	while (i < n) {
-//		fibo[i%2] = fibo[(i-1)%2].squared() + fibo[(i-2)%2];
+
+	unsigned i = 2U;
+	while (i < n) {
+		fibo[i%2] = fibo[(i-1)%2].squared() + fibo[(i-2)%2];
 //		cout << i << " : " << fibo[i%2] << endl;
-//
-//		++i;
-//	}
-//
-//	cout << fibo[(n-1)%2] << endl;
+		++i;
+	}
+
+	cout << fibo[(n-1)%2] << endl;
 
 	// Number class operator Test
 //	Number a = 2;
-//	a.squared();
-
+//
 //	for (int i = 0; i < 10; ++i) {
 //		cout << a << endl;
-//		a.squared()
+//		a = a.squared();
 //	}
 
-	list<int> test = {1,2,3};
-	cout << test.size() << endl;
-	cout << distance(test.begin(), test.end()) << endl;
 	return 0;
 }
