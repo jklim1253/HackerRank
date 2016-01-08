@@ -1,4 +1,4 @@
-TARGET=fibo_modi
+TARGET=test
 
 CXX=g++
 CXXFLAGS=-g -Wall -std=c++11
@@ -9,7 +9,7 @@ LDFLAGS=
 default: $(TARGET)
 all: default
 
-OBJS = $(patsubst %.cpp, %.o, $(wildcard *.cpp))
+OBJECTS = $(patsubst %.cpp, %.o, $(wildcard *.cpp))
 HEADERS = $(wildcard *.h)
 
 %.o: %.cpp $(HEADERS)
@@ -17,8 +17,8 @@ HEADERS = $(wildcard *.h)
 
 .PRECIOUS: $(TARGET) $(OBJECTS)
 
-$(TARGET) : $(OBJS)
-	$(CXX) $(OBJS) -Wall $(LIBS) -o $@
+$(TARGET) : $(OBJECTS)
+	$(CXX) $(OBJECTS) -Wall $(LDFLAGS) -o $@
 
 clean :
 	-rm -f *.o
